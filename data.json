@@ -1,0 +1,20 @@
+{
+  "tomato yellow leaves": {
+    "crop": "Tomato",
+    "issue": "Yellow Leaves",
+    "solution": "Possible nitrogen deficiency. Use nitrogen fertilizer.",
+    "tip": "Ensure proper watering and sunlight."
+  },
+  "rice pest": {
+    "crop": "Rice",
+    "issue": "Pest Attack",
+    "solution": "Use neem oil spray.",
+    "tip": "Check crops regularly."
+  },
+  "wheat fungus": {
+    "crop": "Wheat",
+    "issue": "Fungal Disease",
+    "solution": "Apply fungicide.",
+    "tip": "Avoid overwatering."
+  }
+}

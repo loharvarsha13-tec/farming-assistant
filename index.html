@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Voice Farming Assistant 🌱</title>
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #eef5ee;
+    }
+
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background: green;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .card {
+      margin-top: 20px;
+      padding: 20px;
+      background: white;
+      display: inline-block;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      width: 320px;
+      text-align: left;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>🌱 Voice Farming Assistant</h1>
+
+<button onclick="startListening()">🎤 Speak</button>
+<p id="text"></p>
+
+<div id="card"></div>
+
+<script>
+
+// 🎤 Voice input
+function startListening() {
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "en-IN"; // Marathi साठी mr-IN
+
+  recognition.start();
+
+  recognition.onresult = function(event) {
+    let text = event.results[0][0].transcript;
+    document.getElementById("text").innerText = "You said: " + text;
+
+    fetch("/ask", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({query: text})
+    })
+    .then(res => res.json())
+    .then(data => {
+      showCard(data);
+      speak(data.solution + ". " + data.tip);
+    });
+  };
+}
+
+// 📱 UI Card
+function showCard(data) {
+  document.getElementById("card").innerHTML = `
+    <div class="card">
+      <h3>🌾 ${data.crop}</h3>
+      <p><b>Issue:</b> ${data.issue}</p>
+      <p><b>Solution:</b> ${data.solution}</p>
+      <p><b>Tip:</b> ${data.tip}</p>
+    </div>
+  `;
+}
+
+// 🔊 FIXED Speak Function
+function speak(text) {
+  const speech = new SpeechSynthesisUtterance();
+
+  speech.text = text;
+  speech.lang = "en-IN";
+  speech.volume = 1;
+  speech.rate = 1;
+  speech.pitch = 1;
+
+  let voices = speechSynthesis.getVoices();
+  if (voices.length > 0) {
+    speech.voice = voices[0];
+  }
+
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(speech);
+}
+
+// Ensure voices load
+window.speechSynthesis.onvoiceschanged = () => {
+  speechSynthesis.getVoices();
+};
+
+</script>
+
+</body>
+</html>
